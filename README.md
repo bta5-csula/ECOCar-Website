@@ -23,7 +23,7 @@ Then open `http://127.0.0.1:4173/`.
 
 ## GitHub Pages
 
-The site uses repository-relative internal links and includes a `.nojekyll` file so GitHub Pages serves the `_astro` asset directory unchanged.
+The site uses repository-relative links and has no build step, framework runtime, or generated asset directory. The included `.nojekyll` file allows GitHub Pages to publish the repository contents directly.
 
 To publish it, open the repository's **Settings → Pages**, choose **Deploy from a branch**, and select the `main` branch with the `/ (root)` folder. The default project-site address will be:
 
@@ -33,3 +33,14 @@ To publish it, open the repository's **Settings → Pages**, choose **Deploy fro
 
 - Email: ecocarchargingeagles@gmail.com
 - Instagram: [@csulaecocar](https://www.instagram.com/csulaecocar/)
+
+## Project structure
+
+- `replica.css` and `replica.js` provide the shared navigation, footer, responsive behavior, reveal effects, Vehicle tabs, and News filters.
+- `home-custom.css` and `home-custom.js` provide the homepage layout, particle fields, video interaction, scroll effects, and looping project carousel.
+- `assets/images/` contains team-owned or team-approved photography used by the live pages.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) records implementation boundaries and maintenance guidance.
+
+## Content maintenance
+
+The current site deliberately contains only Cal State LA EcoCAR content. Add new team information directly to the relevant HTML page rather than inserting replacement text at runtime. Keep shared navigation changes synchronized across all six pages.
