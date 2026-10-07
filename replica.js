@@ -30,3 +30,17 @@ document.querySelectorAll('.filter').forEach(button=>button.addEventListener('cl
   document.querySelectorAll('.story').forEach(story=>story.classList.add('is-filtering'));
   window.setTimeout(()=>document.querySelectorAll('.story').forEach(story=>{story.hidden=button.dataset.filter!=='All'&&story.dataset.category!==button.dataset.filter;story.classList.remove('is-filtering')}),180);
 }));
+
+const lightningCanvas=document.querySelector('[data-about-lightning]');
+if(lightningCanvas){
+  const context=lightningCanvas.getContext('2d'),reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const polygon=[[.58,.04],[.24,.53],[.47,.53],[.34,.96],[.77,.39],[.54,.39]];
+  const inside=(x,y)=>{let hit=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const a=polygon[i],b=polygon[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])hit=!hit}return hit};
+  let seed=8183;const random=()=>{seed=seed*16807%2147483647;return(seed-1)/2147483646};
+  const particles=[];while(particles.length<820){const x=random(),y=random();if(inside(x,y))particles.push({x,y,size:.9+random()*2.1,phase:random()*Math.PI*2,color:['#f3bc16','#e6a900','#4168e8','#191a1d'][particles.length%4],alpha:.55+random()*.45})}
+  let width=1,height=1,dpr=1,running=false;
+  const resize=()=>{const rect=lightningCanvas.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);width=Math.max(1,rect.width);height=Math.max(1,rect.height);lightningCanvas.width=Math.round(width*dpr);lightningCanvas.height=Math.round(height*dpr);context.setTransform(dpr,0,0,dpr,0,0)};
+  const draw=time=>{context.clearRect(0,0,width,height);const scale=Math.min(width*.95,height*1.06),left=width*.5-scale*.5,top=height*.5-scale*.5;particles.forEach((particle,index)=>{const drift=reduced?0:Math.sin(time*.00035+particle.phase)*2.6,x=left+particle.x*scale+drift,y=top+particle.y*scale+Math.cos(time*.00028+particle.phase)*1.8;context.save();context.translate(x,y);context.rotate(-.18+Math.sin(particle.phase)*.12);context.globalAlpha=particle.alpha;context.fillStyle=particle.color;if(index%3===0)context.fillRect(-particle.size*1.8,-particle.size*.5,particle.size*3.6,particle.size);else{context.beginPath();context.arc(0,0,particle.size,0,Math.PI*2);context.fill()}context.restore()});context.globalAlpha=1;if(running&&!reduced)requestAnimationFrame(draw)};
+  const start=()=>{if(running)return;running=true;requestAnimationFrame(draw)};
+  new ResizeObserver(resize).observe(lightningCanvas);new IntersectionObserver(entries=>{if(entries[0].isIntersecting){if(!reduced)start()}else running=false}).observe(lightningCanvas);resize();if(reduced)draw(0);else start();
+}
