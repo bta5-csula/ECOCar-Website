@@ -2,54 +2,76 @@
 
 ## Overview
 
-The Cal State LA EcoCAR website is a static, multi-page site designed for direct deployment to GitHub Pages. It intentionally avoids a build system so team members can preview and update it with a basic local web server.
+The Cal State LA EcoCAR website is a static, multi-page site intended for direct deployment from the repository root to GitHub Pages. It has no package-install or build step. The included `.nojekyll` file is required so GitHub Pages serves the `_astro` directory unchanged.
 
-The visual language is consistent across the site: light surfaces, large editorial typography, rounded media shapes, restrained color, particle motion, and compact pill-shaped controls. All public copy and media in the live implementation are specific to Cal State LA EcoCAR.
+The official public name is **Cal State LA EcoCAR**. **Charging Eagles** is the team nickname and should not replace the public name in navigation, metadata, or primary headings.
 
-## Shared layer
+## Approved homepage baseline
 
-`replica.css` owns the typography, fixed header, primary and mobile navigation, footer, secondary-page layouts, responsive breakpoints, and shared interaction states.
+The homepage is a preserved, Antigravity-inspired composition whose current layout and motion have been visually approved. Treat the following behavior as a regression-sensitive baseline:
 
-`replica.js` owns:
+- Morphing particle hero and its established flow.
+- Hero typing sequence and inline blinking cursor.
+- Scroll-responsive video presentation and pointer-following play control.
+- Engineering icon ribbon.
+- Feature stories and team photography.
+- Seamless bidirectional project carousel and per-slide typing behavior.
+- Animated involvement cards, shaped news media, and final particle call to action.
+- Existing desktop and mobile spacing, footer scale, and responsive behavior.
 
-- Mobile navigation state and accessible labels.
-- Viewport-based reveal effects.
-- Vehicle project-area tabs, keyboard navigation, and icon changes.
-- News category filtering.
+Do not broadly rewrite, reformat, or replace the homepage structure merely for source neatness. Make homepage changes one component at a time and compare desktop and mobile rendering before and after each change.
 
-Every public page uses the same header structure. When changing navigation labels or destinations, update all HTML pages together and preserve each page's `aria-current` marker.
+## Homepage implementation
 
-## Homepage layer
+`index.html` contains the public EcoCAR copy, routes, metadata, content cards, and preserved component markup.
 
-`index.html` contains the final EcoCAR content directly. It does not depend on a mirrored page or replace third-party copy after loading.
+`home-custom.css` contains the EcoCAR-specific presentation layered over the preserved component styles.
 
-`home-custom.css` owns the homepage-only layout and animation presentation.
+`home-custom.js` handles targeted EcoCAR adaptation and interactions, including:
 
-`home-custom.js` owns:
+- Local engineering icon loading.
+- Team branding and navigation behavior.
+- Video preview and accessible YouTube dialog.
+- Feature and carousel media assignment.
+- Seamless carousel cloning and navigation.
+- EcoCAR typing sequences and cursor placement.
 
-- Header state while scrolling.
-- Hero and call-to-action particle fields.
-- Hero and featured-video scroll motion.
-- The pointer-following video control and accessible video dialog.
-- The continuously looping project carousel.
-- Per-slide typing animation, with the cursor kept inline after the final character.
+The earlier broad runtime text-replacement map has been removed. Public copy that has already been finalized should remain directly in the page source.
 
-All motion respects the user's reduced-motion preference.
+`_astro/` contains the locally stored, hashed runtime modules and styles needed for the approved particles, smooth scrolling, typed headings, slider behavior, and supporting interactions. These are vendored runtime files: their generated formatting, filenames, and internal whitespace should not be cleaned mechanically.
 
-## Assets and external media
+`.reference/sprite-icons.svg` is a runtime dependency used by the homepage icon row. The other `.reference` HTML files are comparison material only and should not be published or linked from the public navigation.
 
-Local photography lives in `assets/images/`. Use descriptive alternative text that identifies the event or activity without guessing identities not supplied by the team.
+## Secondary pages
 
-The featured video opens the approved YouTube video in a privacy-enhanced embed. The poster remains a local team image so the homepage still renders when an external embed is unavailable.
+The About, Vehicle, Team, News, and Join pages use a separate shared layer based on `replica.css` and `replica.js`, with page-specific files where required. Their designs and navigation are still being reviewed against the approved homepage. Do not treat current secondary-page experiments as final until they have been inspected and approved page by page.
+
+Keep these principles consistent across the secondary pages:
+
+- Use the same public team name and navigation destinations.
+- Preserve the active-page indication and accessible mobile-menu state.
+- Keep the favicon and team logo consistent with the homepage.
+- Use supplied team facts and photographs without guessing identities, dates, or roles.
+
+## External media
+
+The featured homepage video opens the approved YouTube video in a privacy-enhanced embed. The exact self-hosted, control-free playback used by the inspiration site would require an authorized local copy of the original EcoCAR video.
+
+Google Fonts and the YouTube preview/embed remain external dependencies. The particle runtime, engineering icon sprite, cursor artwork, textures, and supporting videos used by the preserved homepage are stored locally.
+
+## Release checks
+
+Before committing or publishing a material change:
+
+1. Start a local static server and confirm the homepage returns HTTP 200.
+2. Check every changed JavaScript file for syntax errors.
+3. Confirm all referenced local images, videos, styles, scripts, and icon files exist.
+4. Test the homepage at desktop and mobile widths.
+5. Exercise the navigation, video dialog, both carousel directions, typed headings, involvement cards, and news slider.
+6. Check the browser console for local asset or JavaScript errors.
+7. Review the staged file list and exclude prototypes, reference pages, and unrelated work.
+8. Use a concise commit subject and a body that records both user-visible behavior and architectural implications.
 
 ## Deployment
 
-GitHub Pages can serve the repository root directly from `main`. Because all internal links and assets are repository-relative, the site works both at the project URL and from a local static server.
-
-Before publishing a material change:
-
-1. Run a local link and asset check.
-2. Test the pages at desktop and mobile widths.
-3. Exercise the mobile menu, Vehicle tabs, News filters, video dialog, and both carousel directions.
-4. Confirm that the browser console contains no local asset or JavaScript errors.
-5. Verify the staged diff and describe the user-visible and architectural changes in the commit body.
+Publish from the `main` branch and repository root. Internal public links and assets are repository-relative so the same files work locally and at the GitHub Pages project URL.

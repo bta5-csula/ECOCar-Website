@@ -23,7 +23,7 @@ Then open `http://127.0.0.1:4173/`.
 
 ## GitHub Pages
 
-The site uses repository-relative links and has no build step, framework runtime, or generated asset directory. The included `.nojekyll` file allows GitHub Pages to publish the repository contents directly.
+The site uses repository-relative internal links and includes a `.nojekyll` file so GitHub Pages serves the `_astro` asset directory unchanged.
 
 To publish it, open the repository's **Settings → Pages**, choose **Deploy from a branch**, and select the `main` branch with the `/ (root)` folder. The default project-site address will be:
 
@@ -36,11 +36,13 @@ To publish it, open the repository's **Settings → Pages**, choose **Deploy fro
 
 ## Project structure
 
-- `replica.css` and `replica.js` provide the shared navigation, footer, responsive behavior, reveal effects, Vehicle tabs, and News filters.
-- `home-custom.css` and `home-custom.js` provide the homepage layout, particle fields, video interaction, scroll effects, and looping project carousel.
-- `assets/images/` contains team-owned or team-approved photography used by the live pages.
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) records implementation boundaries and maintenance guidance.
+- `index.html`, `home-custom.css`, and `home-custom.js` contain the approved homepage and its EcoCAR-specific presentation and interactions.
+- `_astro/` contains the locally stored runtime modules required by the approved homepage motion and layout.
+- `.reference/sprite-icons.svg` supplies the homepage engineering icon artwork. The other files under `.reference/` are design references and are not part of the public site.
+- `replica.css` and `replica.js` are the shared layer for the secondary pages.
+- `assets/images/` contains team-owned or team-approved photography used by the public pages.
 
-## Content maintenance
+## Maintenance documentation
 
-The current site deliberately contains only Cal State LA EcoCAR content. Add new team information directly to the relevant HTML page rather than inserting replacement text at runtime. Keep shared navigation changes synchronized across all six pages.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) explains the implementation boundaries and release checks.
+- [`docs/CONTENT-ROADMAP.md`](docs/CONTENT-ROADMAP.md) records confirmed identity decisions and content that still needs approval.
