@@ -2,3 +2,21 @@
 .DS_Store
 Thumbs.db
 
+# Local design references and discarded prototypes
+/.reference/*.html
+/prototype-v1/
+/styles.css
+/script.js
+/pages.css
+/pages.js
+/icon-fallback.css
+/assets/logo.svg
+/assets/logo-large.svg
+/assets/images/antigravity-cli.png
+/assets/images/blog-*.png
+/assets/images/blog-*.jpg
+/assets/images/enterprise.jpg
+/assets/images/feature-3.jpg
+/assets/images/fullstack.jpg
+/assets/images/new-chat.png
+
