@@ -28,19 +28,28 @@ function ensureHomeMetadata(){
  document.querySelectorAll('link[rel*="icon"]').forEach(link=>link.remove());const favicon=document.createElement('link');favicon.rel='icon';favicon.type='image/jpeg';favicon.href='assets/ecocar-logo.jpg';document.head.appendChild(favicon);
 }
 
-function positionCaseCursor(container){
- const content=container.querySelector('.typed-content'),cursor=container.querySelector('.cursor-container');if(!content||!cursor)return;
- const base=container.getBoundingClientRect();let x=0,y=0;
- if(content.textContent){const walker=document.createTreeWalker(content,NodeFilter.SHOW_TEXT);let node,last;while((node=walker.nextNode()))if(node.nodeValue?.length)last=node;if(last){const range=document.createRange();range.setStart(last,last.nodeValue.length-1);range.setEnd(last,last.nodeValue.length);const end=range.getBoundingClientRect();x=end.right-base.left;y=end.top-base.top}}
+function positionCaseCursor(container,character,after=true){
+ const cursor=container.querySelector('.cursor-container');if(!cursor||!character)return;
+ const base=container.getBoundingClientRect(),end=character.getBoundingClientRect();let x=(after?end.right:end.left)-base.left,y=end.top-base.top;
  x=Math.max(0,x);y=Math.max(0,y);cursor.style.setProperty('--cursor-pos-x',`${x}px`);cursor.style.setProperty('--cursor-pos-y',`${y}px`);cursor.style.transform=`translate(${x}px,${y}px)`;
 }
 
+function prepareCaseTitle(container){
+ const content=container?.querySelector('.typed-content'),text=container?.dataset.ecoCaseTitle||'';if(!content)return[];
+ let characters=[...content.querySelectorAll('.eco-case-char')];if(content.dataset.ecoPreparedText!==text||characters.length!==[...text].length){content.textContent='';characters=[...text].map(character=>{const span=document.createElement('span');span.className='eco-case-char';span.textContent=character;content.appendChild(span);return span});content.dataset.ecoPreparedText=text}
+ return characters;
+}
+
+function resetCaseTitle(container){
+ if(!container)return;container.dataset.ecoTypingRun=String((Number(container.dataset.ecoTypingRun)||0)+1);prepareCaseTitle(container).forEach(character=>character.classList.remove('is-visible'));const cursor=container.querySelector('.cursor-container');if(cursor)cursor.style.opacity='0';
+}
+
 function typeCaseTitle(container){
- const content=container.querySelector('.typed-content'),cursor=container.querySelector('.cursor-container'),text=container.dataset.ecoCaseTitle||'';if(!content||!cursor)return;
- const run=(Number(container.dataset.ecoTypingRun)||0)+1;container.dataset.ecoTypingRun=String(run);cursor.style.opacity='1';
- if(matchMedia('(prefers-reduced-motion: reduce)').matches){content.textContent=text;positionCaseCursor(container);return}
- content.textContent='';positionCaseCursor(container);let index=0;
- const tick=()=>{if(Number(container.dataset.ecoTypingRun)!==run)return;index+=1;content.textContent=text.slice(0,index);positionCaseCursor(container);if(index<text.length)setTimeout(tick,38)};setTimeout(tick,90);
+ const cursor=container.querySelector('.cursor-container');if(!cursor)return;const characters=prepareCaseTitle(container);if(!characters.length)return;
+ const run=(Number(container.dataset.ecoTypingRun)||0)+1;container.dataset.ecoTypingRun=String(run);characters.forEach(character=>character.classList.remove('is-visible'));cursor.style.opacity='1';
+ positionCaseCursor(container,characters[0],false);
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){characters.forEach(character=>character.classList.add('is-visible'));positionCaseCursor(container,characters.at(-1));return}
+ let index=0;const tick=()=>{if(Number(container.dataset.ecoTypingRun)!==run)return;const character=characters[index];character.classList.add('is-visible');positionCaseCursor(container,character);index+=1;if(index<characters.length)setTimeout(tick,38)};setTimeout(tick,90);
 }
 
 function installUseCaseTyping(){
@@ -53,7 +62,7 @@ function installLoopingUseCaseSlider(force=false){
  const section=document.querySelector('.landing-use-case-section'),slider=section?.querySelector('[data-slider]'),track=slider?.querySelector('[data-track]'),copyWrapper=section?.querySelector('[data-copy-wrapper]');if(!section||!slider||!track||!copyWrapper||section.dataset.ecoLoopReady&&!force)return;
  section.dataset.ecoLoopReady='true';const slides=[...track.querySelectorAll('.slide-image')],copies=[...copyWrapper.querySelectorAll('.slider-copy')],count=slides.length;let index=Math.max(0,slides.findIndex(slide=>slide.classList.contains('is-active'))),moving=false;
  const setCopy=next=>copies.forEach((copy,i)=>{const active=i===next;copy.classList.toggle('is-active',active);[...copy.children].forEach(child=>{child.style.opacity=active?'1':'0';child.style.visibility=active?'visible':'hidden';child.style.transform=active?'translateY(0)':'translateY(30px)'})});
- const go=direction=>{if(moving||count<2)return;moving=true;const next=(index+direction+count)%count,from=slides[index],to=slides[next];to.classList.add('eco-loop-visible');to.style.transition='none';to.style.transform=`translateX(${direction>0?100:-100}%)`;to.style.opacity='1';void to.offsetWidth;from.classList.add('eco-loop-visible');from.style.transition='transform .48s cubic-bezier(.22,.7,.18,1)';to.style.transition='transform .48s cubic-bezier(.22,.7,.18,1)';requestAnimationFrame(()=>{from.style.transform=`translateX(${direction>0?-100:100}%)`;to.style.transform='translateX(0)'});setCopy(next);setTimeout(()=>{from.classList.remove('is-active','eco-loop-visible');from.style.cssText='';to.classList.add('is-active');to.classList.remove('eco-loop-visible');to.style.cssText='';index=next;slider.dataset.activeIndex=String(index);moving=false},500)};
+ const go=direction=>{if(moving||count<2)return;moving=true;const next=(index+direction+count)%count,from=slides[index],to=slides[next];resetCaseTitle(to.querySelector('[data-eco-case-title]'));to.classList.add('eco-loop-visible');to.style.transition='none';to.style.transform=`translateX(${direction>0?100:-100}%)`;to.style.opacity='1';void to.offsetWidth;from.classList.add('eco-loop-visible');from.style.transition='transform .48s cubic-bezier(.22,.7,.18,1)';to.style.transition='transform .48s cubic-bezier(.22,.7,.18,1)';requestAnimationFrame(()=>{from.style.transform=`translateX(${direction>0?-100:100}%)`;to.style.transform='translateX(0)'});setCopy(next);setTimeout(()=>{from.classList.remove('is-active','eco-loop-visible');from.style.cssText='';to.classList.add('is-active');to.classList.remove('eco-loop-visible');to.style.cssText='';index=next;slider.dataset.activeIndex=String(index);moving=false},500)};
  const controls=section.querySelector('.slider-controls');if(!controls)return;const clean=controls.cloneNode(true);controls.replaceWith(clean);const previous=clean.querySelector('[data-arrow-left]'),next=clean.querySelector('[data-arrow-right]');const enable=()=>[previous,next].forEach(button=>{if(button){button.disabled=false;button.removeAttribute('disabled')}});enable();new MutationObserver(enable).observe(clean,{subtree:true,attributes:true,attributeFilter:['disabled']});previous?.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();go(-1)},true);next?.addEventListener('click',event=>{event.preventDefault();event.stopImmediatePropagation();go(1)},true);setCopy(index);
 }
 
@@ -108,7 +117,7 @@ function customizeHome(){
   slide.classList.add('eco-static-case');slide.removeAttribute('data-youtube-url');
   slide.querySelectorAll('.custom-cursor-wrapper,.video-control-button').forEach(element=>element.remove());
   const title=slide.querySelector('.slide-image-overlay [data-typed-header],.slide-image-overlay [data-eco-case-title]');
-  if(title){title.removeAttribute('data-typed-header');title.dataset.ecoCaseTitle=caseLabels[index]||'Team media';const hidden=title.querySelector('.visually-hidden');if(hidden)hidden.textContent=title.dataset.ecoCaseTitle;const content=title.querySelector('.typed-content');if(content)content.textContent=title.dataset.ecoCaseTitle}
+  if(title){title.removeAttribute('data-typed-header');title.dataset.ecoCaseTitle=caseLabels[index]||'Team media';const hidden=title.querySelector('.visually-hidden');if(hidden)hidden.textContent=title.dataset.ecoCaseTitle;prepareCaseTitle(title)}
   const wrapper=slide.querySelector('.slide-image-wrapper');
   if(wrapper&&!wrapper.dataset.ecoReady){wrapper.dataset.ecoReady='true';wrapper.innerHTML=`<div class="eco-case-placeholder"><img src="${casePhotos[index%casePhotos.length]}" alt="Cal State LA EcoCAR workshop"></div>`}
   installCaseCursor(slide);
