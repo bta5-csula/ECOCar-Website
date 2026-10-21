@@ -71,9 +71,14 @@ main{overflow:hidden;padding-top:52px}
 .portrait.dark{background:#1f2022}
 .portrait:before{content:"";width:86px;height:86px;border:2px solid #d3d5da;border-radius:50%;box-shadow:0 105px 0 52px #e3e5e9}
 .portrait.dark:before{border-color:#606268;box-shadow:0 105px 0 52px #333438}
-.portrait.has-photo img{width:100%;height:100%;object-fit:cover}.people-grid .person-card:nth-of-type(1) .portrait img{object-position:26% center}.people-grid .person-card:nth-of-type(6) .portrait img{object-position:72% center}
+.portrait.has-photo img{width:100%;height:100%;object-fit:cover;object-position:center 28%}
+.portrait.portrait-blekhman img{transform:scale(1.2)}
 .person-card h2{font-size:18px;font-weight:520;margin:18px 0 4px}
 .person-card p{margin:0;color:var(--muted)}
+.person-card details{margin-top:10px;border-top:1px solid var(--line);font-size:14px}
+.person-card summary{padding:10px 0;cursor:pointer;font-weight:520}
+.person-card details p{margin:0 0 10px;color:#45474b;line-height:1.5}
+.person-card details a{display:inline-block;margin-bottom:8px;text-decoration:underline;text-underline-offset:4px}
 .group-title{grid-column:1/-1;font-size:28px;font-weight:460;margin:42px 0 0;padding-top:25px;border-top:1px solid var(--line)}
 
 .blog-page{padding:72px var(--page) 120px}
