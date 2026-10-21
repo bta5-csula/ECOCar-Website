@@ -173,3 +173,13 @@
   start();
   typeHeading();
 })();
+
+(() => {
+  if (!window.location.hash) return;
+  const target = document.querySelector(window.location.hash);
+  if (!target) return;
+
+  window.addEventListener('load', () => {
+    window.setTimeout(() => target.scrollIntoView({ block: 'start' }), 150);
+  }, { once: true });
+})();
