@@ -100,16 +100,112 @@ function installAccessibleMobileMenu(){
  new MutationObserver(sync).observe(menu,{attributes:true,attributeFilter:['class']});sync();
 }
 
+function installPartnerBandInteractions(band){
+ if(!band||band.dataset.ecoInteractionReady)return;
+ band.dataset.ecoInteractionReady='true';
+ const track=band.querySelector('.home-partner-track');
+ const viewport=band.querySelector('.home-partner-viewport');
+ const cards=[...band.querySelectorAll('.home-partner-card')];
+ const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let rate=1,targetRate=1,rateFrame=0;
+ const animateRate=()=>{rate+=(targetRate-rate)*.075;track.getAnimations().forEach(animation=>animation.playbackRate=rate);if(Math.abs(targetRate-rate)>.01)rateFrame=requestAnimationFrame(animateRate);else{rate=targetRate;track.getAnimations().forEach(animation=>animation.playbackRate=rate);rateFrame=0}};
+ const setRate=next=>{if(reducedMotion)return;targetRate=next;if(!rateFrame)rateFrame=requestAnimationFrame(animateRate)};
+ band.addEventListener('pointerenter',()=>{band.classList.add('is-interacting');setRate(.12)});
+ band.addEventListener('pointerleave',()=>{band.classList.remove('is-interacting');setRate(1)});
+ band.addEventListener('focusin',()=>setRate(.12));
+ band.addEventListener('focusout',()=>requestAnimationFrame(()=>{if(!band.contains(document.activeElement))setRate(1)}));
+ cards.forEach(card=>{card.addEventListener('pointermove',event=>{if(reducedMotion)return;const rect=card.getBoundingClientRect(),x=((event.clientX-rect.left)/rect.width-.5)*10,y=((event.clientY-rect.top)/rect.height-.5)*8;card.style.setProperty('--mag-x',`${x}px`);card.style.setProperty('--mag-y',`${y}px`)});card.addEventListener('pointerleave',()=>{card.style.setProperty('--mag-x','0px');card.style.setProperty('--mag-y','0px')})});
+ let drag=null,dragged=false;
+ const finishDrag=event=>{if(!drag)return;viewport.releasePointerCapture?.(event.pointerId);drag=null;viewport.classList.remove('is-dragging');setTimeout(()=>setRate(band.matches(':hover')?.12:1),420)};
+ viewport.addEventListener('pointerdown',event=>{if(reducedMotion||event.pointerType==='mouse'||event.button!==0)return;const animation=track.getAnimations()[0];if(!animation)return;drag={x:event.clientX,time:Number(animation.currentTime)||0,animation,duration:Number(animation.effect?.getTiming().duration)||80000,width:band.querySelector('.home-partner-set')?.scrollWidth||1};dragged=false;viewport.setPointerCapture?.(event.pointerId);viewport.classList.add('is-dragging');animation.pause()});
+ viewport.addEventListener('pointermove',event=>{if(!drag)return;const delta=drag.x-event.clientX;if(Math.abs(delta)>6)dragged=true;drag.animation.currentTime=drag.time+delta*(drag.duration/drag.width)});
+ viewport.addEventListener('pointerup',finishDrag);viewport.addEventListener('pointercancel',finishDrag);
+ viewport.addEventListener('click',event=>{if(dragged){event.preventDefault();event.stopPropagation();dragged=false}},true);
+}
+
+function installPartnerDockInteractions(dock){
+ if(!dock||dock.dataset.ecoInteractionReady)return;
+ dock.dataset.ecoInteractionReady='true';
+ const track=dock.querySelector('.home-partner-dock-track');
+ const viewport=dock.querySelector('.home-partner-dock-viewport');
+ const cards=[...dock.querySelectorAll('.home-partner-card')];
+ const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let rate=1,targetRate=1,rateFrame=0,focusFrame=0,inView=false,hovered=false,drag=null,dragged=false,inertiaFrame=0,scrollTimer=0,lastScrollY=scrollY,lastScrollTime=performance.now();
+ const animations=()=>track?.getAnimations?.()||[];
+ const animateRate=()=>{rate+=(targetRate-rate)*.07;animations().forEach(animation=>animation.playbackRate=rate);if(Math.abs(targetRate-rate)>.008)rateFrame=requestAnimationFrame(animateRate);else{rate=targetRate;animations().forEach(animation=>animation.playbackRate=rate);rateFrame=0}};
+ const setRate=next=>{if(reducedMotion)return;targetRate=next;if(!rateFrame)rateFrame=requestAnimationFrame(animateRate)};
+ const updateFocus=()=>{if(!inView||reducedMotion){focusFrame=0;return}const rect=viewport.getBoundingClientRect(),center=rect.left+rect.width/2,range=rect.width*.34;cards.forEach(card=>{const cardRect=card.getBoundingClientRect(),distance=Math.abs(cardRect.left+cardRect.width/2-center),influence=Math.max(0,1-distance/range);card.style.setProperty('--center-boost','0');card.style.setProperty('--center-y',`${(influence*-5).toFixed(2)}px`);card.style.setProperty('--center-opacity','1');card.style.setProperty('--center-saturation',(0.98+influence*.06).toFixed(3));card.style.setProperty('--center-brightness',(1+influence*.035).toFixed(3))});focusFrame=requestAnimationFrame(updateFocus)};
+ const setInView=visible=>{inView=visible;if(visible){dock.classList.add('is-visible');if(!focusFrame&&!reducedMotion)focusFrame=requestAnimationFrame(updateFocus)}};
+ if(!('IntersectionObserver' in window))setInView(true);else new IntersectionObserver(entries=>setInView(entries[0]?.isIntersecting),{threshold:.08}).observe(dock);
+ dock.addEventListener('pointermove',event=>{if(reducedMotion)return;const rect=dock.getBoundingClientRect();dock.style.setProperty('--dock-x',`${((event.clientX-rect.left)/rect.width)*100}%`);dock.style.setProperty('--dock-y',`${((event.clientY-rect.top)/rect.height)*100}%`)});
+ dock.addEventListener('pointerenter',()=>{hovered=true;setRate(.16)});
+ dock.addEventListener('pointerleave',()=>{hovered=false;dock.style.setProperty('--dock-x','50%');dock.style.setProperty('--dock-y','46%');if(!drag)setRate(1)});
+ dock.addEventListener('focusin',()=>setRate(.16));
+ dock.addEventListener('focusout',()=>requestAnimationFrame(()=>{if(!dock.contains(document.activeElement)&&!hovered)setRate(1)}));
+ cards.forEach(card=>{
+  card.addEventListener('pointermove',event=>{if(reducedMotion)return;const rect=card.getBoundingClientRect(),x=(event.clientX-rect.left)/rect.width-.5,y=(event.clientY-rect.top)/rect.height-.5;card.style.setProperty('--mag-x',`${x*7}px`);card.style.setProperty('--mag-y',`${y*6}px`);card.style.setProperty('--tilt-x',`${y*-5}deg`);card.style.setProperty('--tilt-y',`${x*7}deg`)});
+  card.addEventListener('pointerleave',()=>{card.style.setProperty('--mag-x','0px');card.style.setProperty('--mag-y','0px');card.style.setProperty('--tilt-x','0deg');card.style.setProperty('--tilt-y','0deg')});
+ });
+ const resume=()=>{animations().forEach(animation=>animation.play());setRate(hovered?.16:1)};
+ const runInertia=()=>{if(!drag||Math.abs(drag.velocity)<.018){drag=null;inertiaFrame=0;resume();return}drag.velocity*=.91;drag.time+=drag.velocity*16*(drag.duration/drag.width);drag.animation.currentTime=drag.time;inertiaFrame=requestAnimationFrame(runInertia)};
+ viewport.addEventListener('pointerdown',event=>{if(reducedMotion||event.button!==0)return;const animation=animations()[0],setWidth=dock.querySelector('.home-partner-dock-set')?.scrollWidth||1;if(!animation)return;if(inertiaFrame){cancelAnimationFrame(inertiaFrame);inertiaFrame=0}drag={animation,x:event.clientX,lastX:event.clientX,lastAt:performance.now(),time:Number(animation.currentTime)||0,duration:Number(animation.effect?.getTiming().duration)||82000,width:setWidth,velocity:0};dragged=false;viewport.setPointerCapture?.(event.pointerId);viewport.classList.add('is-dragging');animation.pause()});
+ viewport.addEventListener('pointermove',event=>{if(!drag)return;const now=performance.now(),delta=drag.lastX-event.clientX,elapsed=Math.max(8,now-drag.lastAt);if(Math.abs(event.clientX-drag.x)>6)dragged=true;drag.velocity=drag.velocity*.55+(delta/elapsed)*.45;drag.time+=delta*(drag.duration/drag.width);drag.animation.currentTime=drag.time;drag.lastX=event.clientX;drag.lastAt=now});
+ const finishDrag=event=>{if(!drag)return;viewport.releasePointerCapture?.(event.pointerId);viewport.classList.remove('is-dragging');if(Math.abs(drag.velocity)>.02)inertiaFrame=requestAnimationFrame(runInertia);else{drag=null;resume()}};
+ viewport.addEventListener('pointerup',finishDrag);viewport.addEventListener('pointercancel',finishDrag);
+ viewport.addEventListener('click',event=>{if(dragged){event.preventDefault();event.stopPropagation();dragged=false}},true);
+ addEventListener('scroll',()=>{if(reducedMotion||hovered||drag||!inView)return;const now=performance.now(),delta=Math.abs(scrollY-lastScrollY),elapsed=Math.max(16,now-lastScrollTime),velocity=delta/elapsed;lastScrollY=scrollY;lastScrollTime=now;setRate(Math.min(1.55,1+velocity*.24));clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>setRate(1),150)},{passive:true});
+}
+
+function installPartnerRibbons(){
+ if(document.querySelector('[data-home-partner-band="top"]'))return;
+ const welcome=document.querySelector('.welcome-wrapper');
+ const footer=document.querySelector('footer.footer');
+ if(!welcome||!footer)return;
+ const partners=[
+  ['Stellantis','https://www.stellantis.com/','assets/logos/stellantis.jpg','is-stellantis'],
+  ['MathWorks','https://www.mathworks.com/','assets/logos/mathworks.png',''],
+  ['U.S. Department of Energy','https://www.energy.gov/','assets/logos/doe.png',''],
+  ['EcoCAR Innovation Challenge','https://avtcseries.org/about-the-ecocar-innovation-challenge/','assets/logos/ecocar-innovation-challenge.png','is-featured'],
+  ['Advanced Vehicle Technology Competitions','https://avtcseries.org/','assets/logos/avtc.png',''],
+  ['Argonne National Laboratory','https://www.anl.gov/','assets/logos/argonne.png',''],
+  ['Cal State LA','https://www.calstatela.edu/','assets/logos/cal-state-la-primary-a-official.png','is-cal-state-la'],
+  ['South Coast AQMD','https://www.aqmd.gov/','assets/logos/south-coast-aqmd.png','is-aqmd'],
+  ['Hesse Mechatronics','https://www.hesse-mechatronics.com/en/','assets/logos/hesse-mechatronics.png',''],
+  ['Analog Devices','https://www.analog.com/en/index.html','assets/logos/analog-devices.png','is-analog']
+ ];
+ const makeCards=(items,modifier='')=>items.map(([name,url,image,className],index)=>`<a class="home-partner-card ${modifier} ${className}"${modifier?` style="--dock-index:${index}"`:''} href="${url}" target="_blank" rel="noopener noreferrer"><img src="${image}" alt="${name}"></a>`).join('');
+ const cards=makeCards(partners);
+ const createBand=position=>{
+  const section=document.createElement('section');
+  section.className=`home-partner-band home-partner-band--${position}`;
+  section.dataset.homePartnerBand=position;
+  section.setAttribute('aria-label','EcoCAR program partners and Cal State LA EcoCAR sponsors');
+  if(position==='top'){
+   const dockCards=makeCards(partners,'home-partner-card--dock');
+   section.innerHTML=`<div class="home-partner-heading"><span>Program partners and team sponsors</span><div class="home-partner-links"><a href="https://avtcseries.org/about-the-ecocar-innovation-challenge/" target="_blank" rel="noopener noreferrer">About the EcoCAR Innovation Challenge <span aria-hidden="true">↗</span></a><a href="https://www.instagram.com/ecocarchallenge/" target="_blank" rel="noopener noreferrer">EcoCAR Challenge on Instagram <span aria-hidden="true">↗</span></a></div></div><div class="home-partner-dock"><span class="home-partner-dock-focus" aria-hidden="true"></span><div class="home-partner-dock-viewport"><div class="home-partner-dock-track"><div class="home-partner-dock-set">${dockCards}</div><div class="home-partner-dock-set" aria-hidden="true">${dockCards}</div></div></div></div>`;
+   section.querySelectorAll('.home-partner-dock-set[aria-hidden="true"] a').forEach(link=>link.tabIndex=-1);
+   installPartnerDockInteractions(section.querySelector('.home-partner-dock'));
+  }else{
+   section.innerHTML=`<div class="home-partner-heading"><span>Program partners and team sponsors</span></div><div class="home-partner-viewport"><div class="home-partner-track"><div class="home-partner-set">${cards}</div><div class="home-partner-set" aria-hidden="true">${cards}</div></div></div>`;
+   section.querySelectorAll('.home-partner-set[aria-hidden="true"] a').forEach(link=>link.tabIndex=-1);
+   installPartnerBandInteractions(section);
+  }
+  return section;
+ };
+ welcome.insertAdjacentElement('afterend',createBand('top'));
+ footer.insertAdjacentElement('beforebegin',createBand('bottom'));
+}
+
 function customizeHome(){
  ensureHomeMetadata();
  document.querySelectorAll('use[href*="sprite-icons.svg"]').forEach(use=>use.setAttribute('href',use.getAttribute('href').replace(/^https:\/\/antigravity\.google\/assets\/image\/icons\/sprite-icons\.svg/,'.reference/sprite-icons.svg')));
  const logoLink=document.querySelector('[data-logo-link]');if(logoLink){logoLink.href='index.html';logoLink.setAttribute('aria-label','Cal State LA EcoCAR');logoLink.innerHTML='<span class="eco-brand"><img src="assets/ecocar-logo.jpg" alt="">Cal State LA EcoCAR</span>';}
  const heroLogo=document.querySelector('.logo-container.astro-lcdefpme');if(heroLogo)heroLogo.innerHTML='<div class="home-team-logo"><img src="assets/ecocar-logo.jpg" alt="">Cal State LA EcoCAR</div>';
- const nav=document.querySelector('header nav.nav');if(nav)nav.innerHTML='<div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="about.html"><span>About</span></a></div><div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="vehicle.html"><span>Vehicle</span></a></div><div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="team.html"><span>Team</span></a></div><div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="news.html"><span>News</span></a></div>';
+ const nav=document.querySelector('header nav.nav');if(nav)nav.innerHTML='<div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="about.html"><span>About</span></a></div><div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="vehicle.html"><span>Vehicle</span></a></div><div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="team.html"><span>Team</span></a></div><div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="outreach.html"><span>Outreach</span></a></div><div class="nav-item"><a class="call-to-action--nav button button-nav button-compact nav-trigger-btn" href="news.html"><span>News</span></a></div>';
  document.querySelectorAll('.rocket-link').forEach(link=>link.style.display='none');
  document.querySelectorAll('.download-button').forEach(link=>{link.href='join.html';link.querySelector('.icon')?.remove();const span=link.querySelector('span');if(span)span.textContent='Join the team'});
- const mobile=document.querySelector('[data-mobile-menu] .mobile-menu-content');if(mobile)mobile.innerHTML='<nav class="eco-mobile-links"><a href="about.html">About</a><a href="vehicle.html">Vehicle</a><a href="team.html">Team</a><a href="news.html">News</a><a href="join.html">Join the team</a></nav>';
- installAccessibleMobileMenu();installFeaturedVideo();installFeaturedVideoScale();syncHomeIconRow();
+ const mobile=document.querySelector('[data-mobile-menu] .mobile-menu-content');if(mobile)mobile.innerHTML='<nav class="eco-mobile-links"><a href="about.html">About</a><a href="vehicle.html">Vehicle</a><a href="team.html">Team</a><a href="outreach.html">Outreach</a><a href="news.html">News</a><a href="join.html">Join the team</a></nav>';
+ installAccessibleMobileMenu();installFeaturedVideo();installFeaturedVideoScale();installPartnerRibbons();syncHomeIconRow();
  const featurePhotos=['assets/images/Geoffrey Chavez, Ayaan Gulwani, Dr. Masood Shahverdi, and the 2026 Jeep Cherokee.jpg','assets/images/Geoffrey and Dr. Shahverdi.jpg','assets/images/Geoffrey.jpg'];document.querySelectorAll('.feature-media').forEach((media,index)=>{if(media.dataset.ecoReady)return;media.dataset.ecoReady='true';media.innerHTML=`<img class="eco-editorial-photo" src="${featurePhotos[index%featurePhotos.length]}" alt="Cal State LA EcoCAR at the 2026 launch workshop">`});
  const caseLabels=['Vehicle integration','Battery engineering','Controls and CAN'];
  const casePhotos=['assets/images/Geoffrey Chavez, Ayaan Gulwani, Dr. Masood Shahverdi, and the 2026 Jeep Cherokee.jpg','assets/images/Geoffrey and Dr. Shahverdi.jpg','assets/images/Geoffrey Dart.jpg'];
@@ -126,7 +222,7 @@ function customizeHome(){
  const mobileNotice=document.querySelector('[data-mobile-footer-notice]');if(mobileNotice&&!mobileNotice.querySelector('.eco-mobile-notice-title')){mobileNotice.classList.add('eco-mobile-notice');mobileNotice.innerHTML='<p class="eco-mobile-notice-title">Meet the team in B-13</p><p class="eco-mobile-notice-copy">General meetings are Fridays from 12–1 p.m. in the Engineering Building garage.</p><a class="button button-secondary-inverse" href="mailto:ecocarchargingeagles@gmail.com">Email the team</a>'}
  document.querySelectorAll('a').forEach(link=>{const label=link.textContent.trim();if(label==='Download'||label.startsWith('Download for')){link.href='join.html';const span=link.querySelector('span');if(span)span.textContent='Join the team'}if(label==='Email the team')link.href='mailto:ecocarchargingeagles@gmail.com';if(label==='Explore Product'||label==='View case')link.href='vehicle.html';if(label==='Read More')link.href='about.html';if(label==='View news')link.href='news.html';});
  document.querySelectorAll('a[href*="antigravity.google"]').forEach(link=>{link.removeAttribute('href');link.setAttribute('aria-hidden','true');link.tabIndex=-1});
- const footerInner=document.querySelector('footer .footer-inner');if(footerInner&&!footerInner.dataset.ecoReady){footerInner.dataset.ecoReady='true';footerInner.classList.add('eco-footer-layout');footerInner.innerHTML='<div class="eco-footer-title"><p class="footer-title heading-5">Cal State LA EcoCAR</p></div><div class="eco-footer-nav"><p class="caption">Explore</p><a class="call-to-action call-to-action--nav" href="about.html">About</a><a class="call-to-action call-to-action--nav" href="vehicle.html">Vehicle</a><a class="call-to-action call-to-action--nav" href="team.html">Team</a></div><div class="eco-footer-nav"><p class="caption">Connect</p><a class="call-to-action call-to-action--nav" href="news.html">News</a><a class="call-to-action call-to-action--nav" href="join.html">Join the team</a><a class="call-to-action call-to-action--nav" href="https://www.instagram.com/csulaecocar/">Instagram</a></div>'}
+ const footerInner=document.querySelector('footer .footer-inner');if(footerInner&&!footerInner.dataset.ecoReady){footerInner.dataset.ecoReady='true';footerInner.classList.add('eco-footer-layout');footerInner.innerHTML='<div class="eco-footer-title"><p class="footer-title heading-5">Cal State LA EcoCAR</p></div><div class="eco-footer-nav"><p class="caption">Explore</p><a class="call-to-action call-to-action--nav" href="about.html">About</a><a class="call-to-action call-to-action--nav" href="vehicle.html">Vehicle</a><a class="call-to-action call-to-action--nav" href="team.html">Team</a><a class="call-to-action call-to-action--nav" href="outreach.html">Outreach</a></div><div class="eco-footer-nav"><p class="caption">Connect</p><a class="call-to-action call-to-action--nav" href="news.html">News</a><a class="call-to-action call-to-action--nav" href="join.html">Join the team</a><a class="call-to-action call-to-action--nav" href="https://www.instagram.com/csulaecocar/">Instagram</a></div>'}
  const footerWord=document.querySelector('[data-antigravity-footer-wrapper]');if(footerWord)footerWord.innerHTML='<div class="home-footer-word">EcoCAR</div>';
  const footerLinks=document.querySelector('.footer-google-links');if(footerLinks)footerLinks.innerHTML='<div class="home-footer-meta">California State University, Los Angeles · Fridays 12–1 p.m. · B-13 Engineering Building garage</div>';
  document.querySelectorAll('[data-typed-header]').forEach(container=>{const accessibleText=container.querySelector('.visually-hidden')?.textContent.trim();if(accessibleText)container.dataset.ecoText=accessibleText});
