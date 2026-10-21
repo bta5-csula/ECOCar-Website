@@ -20,3 +20,13 @@ Thumbs.db
 /assets/images/fullstack.jpg
 /assets/images/new-chat.png
 
+# Local source packages and unused asset variants
+/new uploads/
+/assets/logos/gm.png
+/assets/logos/cal-state-la-primary-a.png
+/assets/images/team/chris-bachman.jpg
+/assets/images/team/chris-bachman-unified.jpg
+/assets/images/team/chris-bachman-unified-v2.jpg
+/assets/images/team/david-blekhman.jpg
+/assets/images/team/david-blekhman-unified.jpg
+

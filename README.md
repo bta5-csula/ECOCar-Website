@@ -8,6 +8,7 @@ The public-facing website for the Cal State LA EcoCAR team, a participant in the
 - About (`about.html`)
 - Vehicle (`vehicle.html`)
 - Team (`team.html`)
+- Outreach (`outreach.html`)
 - News (`news.html`)
 - Join (`join.html`)
 
@@ -46,3 +47,5 @@ To publish it, open the repository's **Settings → Pages**, choose **Deploy fro
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) explains the implementation boundaries and release checks.
 - [`docs/CONTENT-ROADMAP.md`](docs/CONTENT-ROADMAP.md) records confirmed identity decisions and content that still needs approval.
+- [`docs/TEAM-MEETING-NOTES-2026-10-13.md`](docs/TEAM-MEETING-NOTES-2026-10-13.md) records the October 2026 website feedback, approved sources, phased work, and open questions.
+- [`docs/WILDFIRE-OUTREACH-BRIEF.md`](docs/WILDFIRE-OUTREACH-BRIEF.md) separates approved public outreach messaging from research questions, internal event notes, and wildfire claim guardrails.

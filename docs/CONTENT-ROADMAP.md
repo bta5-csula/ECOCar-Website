@@ -22,7 +22,14 @@ This file records decisions and pending material so incomplete ideas are not acc
 - Team Program Identity material covering mission, vision, strategic goals, team overview, and target audiences.
 - Professional photographs from the 2026 EcoCAR event, including a formal Cal State LA group photograph.
 - Additional travel and candid photographs that may be appropriate for an event gallery or news post.
-- Faculty and student biographies, updated portraits, sponsor information, and the final visual-identity package are expected later.
+- The approved faculty and student roster, biographies, portraits, group photograph, team video, and primary competition logo files were received in October 2026 and are being incorporated in Phase 1.
+
+## Current content gaps
+
+- Wildfire and outreach source material was received in October 2026. The approved Outreach page structure separates Community Outreach from Government & Industry Outreach; detailed source notes and claim guardrails are recorded in `WILDFIRE-OUTREACH-BRIEF.md`.
+- Approved artwork has been supplied for Cal State LA, South Coast AQMD, Hesse Mechatronics, and Analog Devices. The Hesse raster file is suitable at its current display size but may be replaced if a higher-resolution approved source becomes available.
+- Event attendance totals and fire-service market/workforce figures require an agreed source, scope, and verification method before publication.
+- Website analytics have not yet been enabled, so historical traffic before the tracking start date cannot be reconstructed.
 
 ## Optional Easter egg
 
