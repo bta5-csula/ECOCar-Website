@@ -86,4 +86,3 @@ These notes preserve the website feedback shared after the team meeting. They ar
 - Is the desired fire-service research local, California-wide, national, or another scope—and for which years?
 - Who will maintain event attendance records, and where should the private source data live?
 - Which analytics account should own the property, and who needs dashboard access?
-
