@@ -7,7 +7,7 @@
   if (!context) return;
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const colors = ['#365fdd', '#5b76e8', '#745bbd', '#9d8221', '#f2c500'];
+  const colors = ['#dba0dd', '#87318a', '#5f338c', '#27235e', '#ffce00'];
   const bolt = [
     [0.56, 0.03], [0.25, 0.52], [0.47, 0.52],
     [0.34, 0.98], [0.78, 0.39], [0.55, 0.39]
