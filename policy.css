@@ -1,0 +1,88 @@
+.policy-page-shell .policy-page {
+  padding: clamp(120px, 15vw, 210px) var(--page) clamp(100px, 12vw, 170px);
+  background:
+    radial-gradient(circle at 92% 4%, rgba(219,160,221,.22), transparent 28%),
+    #fff;
+}
+
+.policy-page-shell .policy-header,
+.policy-page-shell .policy-content {
+  max-width: 980px;
+  margin-inline: auto;
+}
+
+.policy-page-shell .policy-kicker {
+  margin: 0 0 18px;
+  color: #87318a;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.policy-page-shell .policy-header h1 {
+  max-width: 850px;
+  margin: 0;
+  font-size: clamp(55px, 8vw, 112px);
+  font-weight: 440;
+  letter-spacing: -.065em;
+  line-height: .9;
+}
+
+.policy-page-shell .policy-summary {
+  max-width: 720px;
+  margin: 34px 0 0;
+  color: #4f535b;
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.5;
+}
+
+.policy-page-shell .policy-updated {
+  margin: 20px 0 0;
+  color: #6f737b;
+  font-size: 13px;
+}
+
+.policy-page-shell .policy-content {
+  display: grid;
+  grid-template-columns: minmax(0, .55fr) minmax(0, 1.45fr);
+  gap: 36px 80px;
+  margin-top: clamp(74px, 9vw, 120px);
+}
+
+.policy-page-shell .policy-section {
+  display: contents;
+}
+
+.policy-page-shell .policy-section h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 37px);
+  font-weight: 500;
+  letter-spacing: -.035em;
+  line-height: 1.08;
+}
+
+.policy-page-shell .policy-copy {
+  padding-bottom: 38px;
+  border-bottom: 1px solid #dfe1e6;
+}
+
+.policy-page-shell .policy-copy p,
+.policy-page-shell .policy-copy li {
+  color: #454950;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.policy-page-shell .policy-copy p { margin: 0 0 18px; }
+.policy-page-shell .policy-copy p:last-child { margin-bottom: 0; }
+.policy-page-shell .policy-copy ul { margin: 0; padding-left: 21px; }
+.policy-page-shell .policy-copy li + li { margin-top: 10px; }
+.policy-page-shell .policy-copy a { color: #5f338c; font-weight: 650; text-underline-offset: 4px; }
+
+@media (max-width: 760px) {
+  .policy-page-shell .policy-content { grid-template-columns: 1fr; gap: 18px; }
+  .policy-page-shell .policy-section { display: block; }
+  .policy-page-shell .policy-section + .policy-section { margin-top: 46px; }
+  .policy-page-shell .policy-section h2 { margin-bottom: 18px; }
+}

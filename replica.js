@@ -18,3 +18,12 @@ document.querySelectorAll('.filter:not([data-news-filter])').forEach(button=>but
   document.querySelectorAll('.story').forEach(story=>story.classList.add('is-filtering'));
   window.setTimeout(()=>document.querySelectorAll('.story').forEach(story=>{story.hidden=button.dataset.filter!=='All'&&story.dataset.category!==button.dataset.filter;story.classList.remove('is-filtering')}),180);
 }));
+
+document.querySelectorAll('img').forEach(image=>{
+  const path=decodeURIComponent(new URL(image.src,document.baseURI).pathname).replace(/\\/g,'/');
+  if(!/\/assets\/images\/(?:Geoffrey|Goeffrey)[^/]*\.(?:jpe?g|png)$/i.test(path))return;
+  const host=image.parentElement;
+  if(!host||host.querySelector(':scope > .eco-photo-credit'))return;
+  host.classList.add('eco-photo-credit-host');
+  host.insertAdjacentHTML('beforeend','<span class="eco-photo-credit" aria-hidden="true">Photo: EcoCAR</span>');
+});
