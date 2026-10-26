@@ -131,6 +131,7 @@ function installPartnerBandInteractions(band){
  viewport.addEventListener('pointerdown',event=>{if(reducedMotion||event.pointerType==='mouse'||event.button!==0)return;const animation=track.getAnimations()[0];if(!animation)return;drag={x:event.clientX,time:Number(animation.currentTime)||0,animation,duration:Number(animation.effect?.getTiming().duration)||80000,width:band.querySelector('.home-partner-set')?.scrollWidth||1};dragged=false;viewport.setPointerCapture?.(event.pointerId);viewport.classList.add('is-dragging');animation.pause()});
  viewport.addEventListener('pointermove',event=>{if(!drag)return;const delta=drag.x-event.clientX;if(Math.abs(delta)>6)dragged=true;drag.animation.currentTime=drag.time+delta*(drag.duration/drag.width)});
  viewport.addEventListener('pointerup',finishDrag);viewport.addEventListener('pointercancel',finishDrag);
+ viewport.addEventListener('dragstart',event=>event.preventDefault());
  viewport.addEventListener('click',event=>{if(dragged){event.preventDefault();event.stopPropagation();dragged=false}},true);
 }
 
@@ -143,6 +144,7 @@ function installPartnerDockInteractions(dock){
  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let rate=1,targetRate=1,rateFrame=0,focusFrame=0,inView=false,hovered=false,cardHovered=false,drag=null,dragged=false,inertiaFrame=0,scrollTimer=0,lastScrollY=scrollY,lastScrollTime=performance.now();
  const animations=()=>track?.getAnimations?.()||[];
+ const wrapTime=(value,duration)=>((value%duration)+duration)%duration;
  const animateRate=()=>{rate+=(targetRate-rate)*(targetRate>rate?.16:.07);animations().forEach(animation=>animation.playbackRate=rate);if(Math.abs(targetRate-rate)>.008)rateFrame=requestAnimationFrame(animateRate);else{rate=targetRate;animations().forEach(animation=>animation.playbackRate=rate);rateFrame=0}};
  const setRate=next=>{if(reducedMotion)return;targetRate=next;if(!rateFrame)rateFrame=requestAnimationFrame(animateRate)};
  const updateFocus=()=>{if(!inView||reducedMotion){focusFrame=0;return}const rect=viewport.getBoundingClientRect(),center=rect.left+rect.width/2,range=rect.width*.34;cards.forEach(card=>{const cardRect=card.getBoundingClientRect(),distance=Math.abs(cardRect.left+cardRect.width/2-center),influence=Math.max(0,1-distance/range);card.style.setProperty('--center-boost','0');card.style.setProperty('--center-y',`${(influence*-5).toFixed(2)}px`);card.style.setProperty('--center-opacity','1');card.style.setProperty('--center-saturation',(0.98+influence*.06).toFixed(3));card.style.setProperty('--center-brightness',(1+influence*.035).toFixed(3))});focusFrame=requestAnimationFrame(updateFocus)};
@@ -159,11 +161,12 @@ function installPartnerDockInteractions(dock){
   card.addEventListener('pointerleave',()=>{cardHovered=false;card.style.setProperty('--mag-x','0px');card.style.setProperty('--mag-y','0px');card.style.setProperty('--tilt-x','0deg');card.style.setProperty('--tilt-y','0deg');if(hovered&&!drag){animations().forEach(animation=>animation.play());setRate(.16)}});
  });
  const resume=()=>{if(cardHovered||dock.contains(document.activeElement)&&document.activeElement.closest('.home-partner-card'))return;animations().forEach(animation=>animation.play());setRate(hovered?.16:1)};
- const runInertia=()=>{if(!drag||Math.abs(drag.velocity)<.018){drag=null;inertiaFrame=0;resume();return}drag.velocity*=.91;drag.time+=drag.velocity*16*(drag.duration/drag.width);drag.animation.currentTime=drag.time;inertiaFrame=requestAnimationFrame(runInertia)};
- viewport.addEventListener('pointerdown',event=>{if(reducedMotion||event.button!==0)return;const animation=animations()[0],setWidth=dock.querySelector('.home-partner-dock-set')?.scrollWidth||1;if(!animation)return;if(inertiaFrame){cancelAnimationFrame(inertiaFrame);inertiaFrame=0}drag={animation,pointerId:event.pointerId,x:event.clientX,lastX:event.clientX,lastAt:performance.now(),time:Number(animation.currentTime)||0,duration:Number(animation.effect?.getTiming().duration)||82000,width:setWidth,velocity:0,active:false};dragged=false});
- viewport.addEventListener('pointermove',event=>{if(!drag||event.pointerId!==drag.pointerId)return;if(!drag.active){if(Math.abs(event.clientX-drag.x)<=6)return;drag.active=true;dragged=true;viewport.setPointerCapture?.(event.pointerId);viewport.classList.add('is-dragging');drag.animation.pause()}const now=performance.now(),delta=drag.lastX-event.clientX,elapsed=Math.max(8,now-drag.lastAt);drag.velocity=drag.velocity*.55+(delta/elapsed)*.45;drag.time+=delta*(drag.duration/drag.width);drag.animation.currentTime=drag.time;drag.lastX=event.clientX;drag.lastAt=now});
- const finishDrag=event=>{if(!drag||event.pointerId!==drag.pointerId)return;if(!drag.active){drag=null;return}viewport.releasePointerCapture?.(event.pointerId);viewport.classList.remove('is-dragging');if(Math.abs(drag.velocity)>.02)inertiaFrame=requestAnimationFrame(runInertia);else{drag=null;resume()}};
+ const runInertia=()=>{if(!drag||Math.abs(drag.velocity)<.018){drag=null;inertiaFrame=0;resume();return}drag.velocity*=.91;drag.time=wrapTime(drag.time+drag.velocity*16*(drag.duration/drag.width),drag.duration);drag.animation.currentTime=drag.time;inertiaFrame=requestAnimationFrame(runInertia)};
+ viewport.addEventListener('pointerdown',event=>{if(reducedMotion||event.button!==0)return;const animation=animations()[0],setWidth=dock.querySelector('.home-partner-dock-set')?.scrollWidth||1;if(!animation)return;if(inertiaFrame){cancelAnimationFrame(inertiaFrame);inertiaFrame=0}const duration=Number(animation.effect?.getTiming().duration)||82000;drag={animation,pointerId:event.pointerId,x:event.clientX,lastX:event.clientX,lastAt:performance.now(),time:wrapTime(Number(animation.currentTime)||0,duration),duration,width:setWidth,velocity:0,active:false};dragged=false;viewport.classList.add('is-pressed')});
+ viewport.addEventListener('pointermove',event=>{if(!drag||drag.released||event.pointerId!==drag.pointerId)return;if(!drag.active){if(Math.abs(event.clientX-drag.x)<=6)return;drag.active=true;dragged=true;viewport.setPointerCapture?.(event.pointerId);viewport.classList.add('is-dragging');drag.animation.pause()}const now=performance.now(),delta=drag.lastX-event.clientX,elapsed=Math.max(8,now-drag.lastAt);drag.velocity=drag.velocity*.55+(delta/elapsed)*.45;drag.time=wrapTime(drag.time+delta*(drag.duration/drag.width),drag.duration);drag.animation.currentTime=drag.time;drag.lastX=event.clientX;drag.lastAt=now});
+ const finishDrag=event=>{if(!drag||event.pointerId!==drag.pointerId)return;viewport.classList.remove('is-pressed');if(!drag.active){drag=null;return}drag.released=true;viewport.releasePointerCapture?.(event.pointerId);viewport.classList.remove('is-dragging');if(Math.abs(drag.velocity)>.02)inertiaFrame=requestAnimationFrame(runInertia);else{drag=null;resume()}};
  viewport.addEventListener('pointerup',finishDrag);viewport.addEventListener('pointercancel',finishDrag);
+ viewport.addEventListener('dragstart',event=>event.preventDefault());
  viewport.addEventListener('click',event=>{if(dragged){event.preventDefault();event.stopPropagation();dragged=false}},true);
  addEventListener('scroll',()=>{if(reducedMotion||hovered||drag||!inView)return;const now=performance.now(),delta=Math.abs(scrollY-lastScrollY),elapsed=Math.max(16,now-lastScrollTime),velocity=delta/elapsed;lastScrollY=scrollY;lastScrollTime=now;setRate(Math.min(1.55,1+velocity*.24));clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>setRate(1),150)},{passive:true});
 }
@@ -174,18 +177,18 @@ function installPartnerRibbons(){
  const footer=document.querySelector('footer.footer');
  if(!welcome||!footer)return;
  const partners=[
+  ['EcoCAR Innovation Challenge','https://avtcseries.org/about-the-ecocar-innovation-challenge/','assets/logos/ecocar-innovation-challenge.png','is-featured'],
+  ['U.S. Department of Energy','https://www.energy.gov/','assets/logos/doe.png',''],
   ['Stellantis','https://www.stellantis.com/','assets/logos/stellantis.jpg','is-stellantis'],
   ['MathWorks','https://www.mathworks.com/','assets/logos/mathworks.png',''],
-  ['U.S. Department of Energy','https://www.energy.gov/','assets/logos/doe.png',''],
-  ['EcoCAR Innovation Challenge','https://avtcseries.org/about-the-ecocar-innovation-challenge/','assets/logos/ecocar-innovation-challenge.png','is-featured'],
-  ['Advanced Vehicle Technology Competitions','https://avtcseries.org/','assets/logos/avtc.png',''],
   ['Argonne National Laboratory','https://www.anl.gov/','assets/logos/argonne.png',''],
+  ['Advanced Vehicle Technology Competitions','https://avtcseries.org/','assets/logos/avtc.png',''],
   ['Cal State LA','https://www.calstatela.edu/','assets/logos/cal-state-la-primary-a-official.png','is-cal-state-la'],
   ['South Coast AQMD','https://www.aqmd.gov/','assets/logos/south-coast-aqmd.png','is-aqmd'],
   ['Hesse Mechatronics','https://www.hesse-mechatronics.com/en/','assets/logos/hesse-mechatronics.png',''],
   ['Analog Devices','https://www.analog.com/en/index.html','assets/logos/analog-devices.png','is-analog']
  ];
- const makeCards=(items,modifier='')=>items.map(([name,url,image,className],index)=>`<a class="home-partner-card ${modifier} ${className}"${modifier?` style="--dock-index:${index}"`:''} href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Visit ${name} website" title="${name}"><img src="${image}" alt="${name}"></a>`).join('');
+ const makeCards=(items,modifier='')=>items.map(([name,url,image,className],index)=>`<a class="home-partner-card ${modifier} ${className}"${modifier?` style="--dock-index:${index}"`:''} href="${url}" target="_blank" rel="noopener noreferrer" aria-label="Visit ${name} website" title="${name}"><img src="${image}" alt="${name}" draggable="false"></a>`).join('');
  const cards=makeCards(partners);
  const createBand=position=>{
   const section=document.createElement('section');
@@ -198,7 +201,7 @@ function installPartnerRibbons(){
    section.querySelectorAll('.home-partner-dock-set[aria-hidden="true"] a').forEach(link=>link.tabIndex=-1);
    installPartnerDockInteractions(section.querySelector('.home-partner-dock'));
   }else{
-   const programCards=makeCards([partners[0],partners[3],partners[1],partners[2],partners[4],partners[5]],'home-partner-card--showcase');
+   const programCards=makeCards([partners[0],partners[1],partners[2],partners[3],partners[4],partners[5]],'home-partner-card--showcase');
    const sponsorCards=makeCards([partners[6],partners[7],partners[8],partners[9]],'home-partner-card--showcase');
    section.innerHTML=`<div class="home-partner-showcase"><div class="home-partner-showcase-copy"><p class="home-partner-showcase-kicker">Powered by partnership</p><h2>Program partners<br>and team sponsors</h2><p>Industry, government, and education partners help Cal State LA students turn engineering knowledge into a competition-ready vehicle.</p></div><div class="home-partner-showcase-groups"><div class="home-partner-showcase-group"><p>Program partners</p><div class="home-partner-showcase-grid home-partner-showcase-grid--program">${programCards}</div></div><div class="home-partner-showcase-group home-partner-showcase-group--sponsors"><p>Team sponsors</p><div class="home-partner-showcase-grid home-partner-showcase-grid--sponsors">${sponsorCards}</div></div></div></div>`;
   }
@@ -206,6 +209,34 @@ function installPartnerRibbons(){
  };
  welcome.insertAdjacentElement('afterend',createBand('top'));
  footer.insertAdjacentElement('beforebegin',createBand('bottom'));
+}
+
+function installEcoCarPhotoCredits(){
+ document.querySelectorAll('img').forEach(image=>{
+  const path=decodeURIComponent(new URL(image.src,document.baseURI).pathname).replace(/\\/g,'/');
+  if(!/\/assets\/images\/(?:Geoffrey|Goeffrey)[^/]*\.(?:jpe?g|png)$/i.test(path))return;
+  const host=image.parentElement;if(!host||host.querySelector(':scope > .eco-photo-credit'))return;
+  host.classList.add('eco-photo-credit-host');
+  host.insertAdjacentHTML('beforeend','<span class="eco-photo-credit" aria-hidden="true">Photo: EcoCAR</span>');
+ });
+}
+
+function installIconRowTyping(section){
+ const header=section?.querySelector('.agent-first-text[data-typed-header]');
+ if(!header||header.dataset.ecoTypingManaged)return;
+ header.dataset.ecoTypingManaged='true';
+ header.setAttribute('data-no-auto-start','');
+ let helperReady=false,shouldStart=false,started=false;
+ const start=()=>{shouldStart=true;if(helperReady)header.helper.startTyping()};
+ const prepare=()=>{
+  if(!header.helper){requestAnimationFrame(prepare);return}
+  const originalStart=header.helper.startTyping.bind(header.helper);
+  header.helper.startTyping=(...args)=>{if(started)return args[0];started=true;header.style.visibility='visible';return originalStart(...args)};
+  helperReady=true;
+  if(shouldStart)header.helper.startTyping();
+ };
+ prepare();
+ if(!('IntersectionObserver'in window))start();else new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting)start()},{threshold:.08,rootMargin:'0px 0px -10%'}).observe(header);
 }
 
 function customizeHome(){
@@ -237,10 +268,11 @@ function customizeHome(){
  document.querySelectorAll('a[href*="antigravity.google"]').forEach(link=>{link.removeAttribute('href');link.setAttribute('aria-hidden','true');link.tabIndex=-1});
  const footerInner=document.querySelector('footer .footer-inner');if(footerInner&&!footerInner.dataset.ecoReady){footerInner.dataset.ecoReady='true';footerInner.classList.add('eco-footer-layout');footerInner.innerHTML='<div class="eco-footer-title"><p class="footer-title heading-5">Cal State LA EcoCAR</p></div><div class="eco-footer-nav"><p class="caption">Explore</p><a class="call-to-action call-to-action--nav" href="about.html">About</a><a class="call-to-action call-to-action--nav" href="vehicle.html">Vehicle</a><a class="call-to-action call-to-action--nav" href="team.html">Team</a><a class="call-to-action call-to-action--nav" href="outreach.html">Outreach</a></div><div class="eco-footer-nav"><p class="caption">Connect</p><a class="call-to-action call-to-action--nav" href="news.html">News</a><a class="call-to-action call-to-action--nav" href="join.html">Join the Team</a><a class="call-to-action call-to-action--nav" href="https://www.instagram.com/csulaecocar/">Instagram</a></div>'}
  const footerWord=document.querySelector('[data-antigravity-footer-wrapper]');if(footerWord)footerWord.innerHTML='<div class="home-footer-word">EcoCAR</div>';
- const footerLinks=document.querySelector('.footer-google-links');if(footerLinks)footerLinks.innerHTML='<div class="home-footer-meta">California State University, Los Angeles · Fridays at 12–1 PM · B-13 Engineering Building Garage</div>';
+ const footerLinks=document.querySelector('.footer-google-links');if(footerLinks)footerLinks.innerHTML='<div class="home-footer-meta"><span>California State University, Los Angeles · Fridays at 12–1 PM · B-13 Engineering Building Garage</span><span class="home-footer-policy-links"><a href="privacy.html">Privacy</a><a href="accessibility.html">Accessibility</a></span></div>';
  document.querySelectorAll('[data-typed-header]').forEach(container=>{const accessibleText=container.querySelector('.visually-hidden')?.textContent.trim();if(accessibleText)container.dataset.ecoText=accessibleText});
- const iconSection=[...document.querySelectorAll('section')].find(section=>section.textContent.includes('multidisciplinary student engineering team'));if(iconSection){iconSection.id='icon-row';if(location.hash==='#icon-row')iconSection.scrollIntoView()}
+ const iconSection=[...document.querySelectorAll('section')].find(section=>section.textContent.includes('multidisciplinary student engineering team'));if(iconSection){iconSection.id='icon-row';installIconRowTyping(iconSection);if(location.hash==='#icon-row')iconSection.scrollIntoView()}
  document.documentElement.classList.add('ecocar-ready');
+ installEcoCarPhotoCredits();
 }
 
 customizeHome();installIconSprite();
