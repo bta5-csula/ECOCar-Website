@@ -227,13 +227,13 @@ function installIconRowTyping(section){
  header.dataset.ecoTypingManaged='true';
  header.setAttribute('data-no-auto-start','');
  let helperReady=false,shouldStart=false,started=false;
- const start=()=>{shouldStart=true;if(helperReady)header.helper.startTyping()};
+ const start=()=>{shouldStart=true;if(helperReady)header.helper.startTyping(undefined,0,.02)};
  const prepare=()=>{
   if(!header.helper){requestAnimationFrame(prepare);return}
   const originalStart=header.helper.startTyping.bind(header.helper);
   header.helper.startTyping=(...args)=>{if(started)return args[0];started=true;header.style.visibility='visible';return originalStart(...args)};
   helperReady=true;
-  if(shouldStart)header.helper.startTyping();
+  if(shouldStart)header.helper.startTyping(undefined,0,.02);
  };
  prepare();
  if(!('IntersectionObserver'in window))start();else new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting)start()},{threshold:.08,rootMargin:'0px 0px -10%'}).observe(header);
