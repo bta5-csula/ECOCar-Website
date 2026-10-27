@@ -1,0 +1,116 @@
+.portrait.portrait-bachman img {
+  object-position: center 28%;
+  transform: scale(1.04) translateY(-15px);
+  filter: brightness(.94) saturate(.96) contrast(.99);
+}
+
+.portrait.portrait-blekhman img {
+  filter: brightness(.92) saturate(.94) contrast(.98);
+}
+
+.bachzilla-card details { position: relative; }
+.bachzilla-card summary { padding-right: 44px; }
+
+.bachzilla-trigger {
+  position: absolute;
+  z-index: 2;
+  top: 5px;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(95, 51, 140, .48);
+  border-radius: 50%;
+  background: #fff2c7;
+  color: #c58f00;
+  box-shadow: 0 4px 12px rgba(39, 35, 94, .1);
+  cursor: pointer;
+  font: inherit;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-7px) scale(.88);
+  transition: opacity .34s ease, visibility .34s ease, transform .34s cubic-bezier(.16, 1, .3, 1), background-color .2s ease, box-shadow .2s ease;
+}
+
+.bachzilla-card details[open] .bachzilla-trigger {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.bachzilla-trigger span {
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.bachzilla-trigger:hover {
+  background: #ffce00;
+  color: #5f338c;
+  box-shadow: 0 0 0 4px rgba(95, 51, 140, .1), 0 7px 18px rgba(39, 35, 94, .17);
+  transform: translateY(-1px) rotate(-3deg);
+}
+
+.bachzilla-trigger[aria-expanded="true"] {
+  background: #f4eaf7;
+  color: #5f338c;
+  box-shadow: 0 0 0 3px rgba(95, 51, 140, .09), 0 6px 16px rgba(39, 35, 94, .15);
+}
+
+.bachzilla-trigger[aria-expanded="true"]:hover {
+  background: #ffce00;
+  transform: translateY(-1px) rotate(-3deg);
+}
+
+.bachzilla-trigger:focus-visible {
+  outline: 3px solid #5f338c;
+  outline-offset: 3px;
+}
+
+.bachzilla-slot {
+  min-width: 0;
+  display: grid;
+  place-items: start center;
+  opacity: 0;
+  transform: translateY(14px) scale(.96);
+  transition: opacity .48s ease, transform .58s cubic-bezier(.16, 1, .3, 1);
+}
+
+.bachzilla-slot[hidden] { display: none; }
+
+.bachzilla-slot.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.bachzilla-slot-art {
+  width: min(100%, 340px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: linear-gradient(#16131c, #16131c) padding-box, linear-gradient(135deg, #ffce00, #87318a 62%, #ffce00) border-box;
+  box-shadow: 0 18px 44px rgba(39, 35, 94, .18);
+}
+
+.bachzilla-slot-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 980px) {
+  .portrait.portrait-bachman img {
+    transform: scale(1.04) translateY(7px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bachzilla-trigger,
+  .bachzilla-slot { transition: none; }
+}

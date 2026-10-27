@@ -31,6 +31,9 @@ This file records decisions and pending material so incomplete ideas are not acc
 - Event attendance totals and fire-service market/workforce figures require an agreed source, scope, and verification method before publication.
 - Google Analytics 4 and Vercel Web Analytics were enabled on October 21, 2026. Traffic before activation cannot be reconstructed.
 
-## Optional Easter egg
+## Team-page Easter egg
 
-`Bachzilla.png` is reserved as a possible optional Easter egg associated with Dr. Chris Bachman. It is not an approved primary faculty portrait and should not be added to the public site until its interaction, placement, accessibility treatment, and publication approval are explicitly decided.
+- The user confirmed that Dr. Chris Bachman approves the existing `Bachzilla.png` image.
+- Dr. Bachman’s Team card preserves his natural appearance while using the shared lab background and approved responsive positioning that matches Dr. Martin’s portrait more closely. His and Dr. Blekhman’s portraits use restrained, nondestructive color grading to better match the surrounding faculty photographs.
+- Opening his biography gently reveals a lightning-bolt control on the Biography row. Activating it fades the unchanged artwork into the otherwise empty sixth faculty-grid position without sound; closing the biography dismisses it.
+- The original source remains in `source-materials/easter-eggs/`, with the public site copy stored in `assets/images/team/`.
