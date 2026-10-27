@@ -5,7 +5,7 @@ These notes preserve the website feedback shared after the team meeting. They ar
 ## Confirmed sources and decisions
 
 - The official public name is **Cal State LA EcoCAR**. **Charging Eagles** is the team nickname.
-- `new uploads/01 - Team Webpage Content/01 - Team Webpage Content/EIC Y1 - Team Webpage Requirements - Charging Eagles.docx` is the current approved source for the roster and biographies.
+- `source-materials/inbox/2026-10-team-upload/01 - Team Webpage Content/01 - Team Webpage Content/EIC Y1 - Team Webpage Requirements - Charging Eagles.docx` is the current approved source for the roster and biographies.
 - Every faculty member must be labeled **Faculty Advisor** on the public website, including Dr. Masood Shahverdi and Dr. Silvia Martin.
 - The correct team-member name is **Ayaan Gulwani**.
 - General meetings are Fridays from 12–1 p.m. in B-13, the Engineering Building garage, and all students are welcome.

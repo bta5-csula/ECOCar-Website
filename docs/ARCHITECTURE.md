@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Cal State LA EcoCAR website is a static, multi-page site intended for direct deployment from the repository root to GitHub Pages. It has no package-install or build step. The included `.nojekyll` file is required so GitHub Pages serves the `_astro` directory unchanged.
+The Cal State LA EcoCAR website is a static, multi-page site deployed from the repository root through Vercel. It has no package-install or build step. The included `.nojekyll` file keeps the `_astro` directory compatible with static hosts that would otherwise treat underscore-prefixed folders specially.
 
 The official public name is **Cal State LA EcoCAR**. **Charging Eagles** is the team nickname and should not replace the public name in navigation, metadata, or primary headings.
 
@@ -74,4 +74,4 @@ Before committing or publishing a material change:
 
 ## Deployment
 
-Publish from the `main` branch and repository root. Internal public links and assets are repository-relative so the same files work locally and at the GitHub Pages project URL.
+Vercel publishes the production site from the `main` branch and repository root at `https://calstatela-ecocar.vercel.app/`. Internal public links and assets are repository-relative so the same files work locally and on the production hostname.
