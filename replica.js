@@ -1,9 +1,14 @@
 const menuButton=document.querySelector('.menu-toggle');
 const mobileNav=document.querySelector('.mobile-nav');
-const closeMenu=()=>{mobileNav?.classList.remove('open');menuButton?.setAttribute('aria-expanded','false');menuButton?.setAttribute('aria-label','Open menu')};
-menuButton?.addEventListener('click',()=>{const open=mobileNav.classList.toggle('open');menuButton.setAttribute('aria-expanded',String(open));menuButton.setAttribute('aria-label',open?'Close menu':'Open menu')});
+const setMenuState=open=>{mobileNav?.classList.toggle('open',open);menuButton?.setAttribute('aria-expanded',String(open));menuButton?.setAttribute('aria-label',open?'Close menu':'Open menu');mobileNav?.setAttribute('aria-hidden',String(!open));if(mobileNav)mobileNav.inert=!open};
+const closeMenu=()=>setMenuState(false);
+setMenuState(false);
+menuButton?.addEventListener('click',()=>setMenuState(!mobileNav?.classList.contains('open')));
 mobileNav?.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeMenu));
 document.addEventListener('keydown',event=>{if(event.key==='Escape')closeMenu()});
+const desktopNavQuery=window.matchMedia('(min-width:901px)');
+const closeMenuAtDesktop=event=>{if(event.matches)closeMenu()};
+if(desktopNavQuery.addEventListener)desktopNavQuery.addEventListener('change',closeMenuAtDesktop);else desktopNavQuery.addListener(closeMenuAtDesktop);
 const pageHeader=document.querySelector('.site-header');
 const updateHeader=()=>pageHeader?.classList.toggle('scrolled',window.scrollY>8);
 window.addEventListener('scroll',updateHeader,{passive:true});updateHeader();
