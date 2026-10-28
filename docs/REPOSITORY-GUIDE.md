@@ -39,6 +39,8 @@ source-materials/
 
 The October 2026 upload batch is stored intact at `source-materials/inbox/2026-10-team-upload/`. Its nested folders and original filenames are preserved so the source and its provenance remain clear.
 
+Superseded prototypes and saved design-reference pages are stored under `source-materials/archive/`. The active homepage icon sprite remains at `.reference/sprite-icons.svg` because the public homepage loads it directly.
+
 ## Adding new material
 
 1. Put a newly received batch in a dated folder under `source-materials/inbox/`.
