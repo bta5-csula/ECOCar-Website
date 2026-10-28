@@ -20,9 +20,15 @@
 .story-block{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);gap:clamp(48px,7vw,110px);align-items:center;padding:0 0 clamp(110px,13vw,190px)}
 .story-block:last-child{padding-bottom:0}
 .story-block-reverse .story-media{order:2}
+.story-block-reverse .story-gallery{order:2}
 .story-media{overflow:hidden;border-radius:28px;background:#e6e6ea;aspect-ratio:4/3}
 .story-media img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .75s cubic-bezier(.2,.7,.2,1)}
 .story-block:hover .story-media img{transform:scale(1.025)}
+.story-gallery{display:grid;gap:22px}
+.story-photo{margin:0}
+.story-photo .story-media{aspect-ratio:16/10}
+.story-photo--group .story-media img{object-fit:contain}
+.story-photo figcaption{margin:11px 4px 0;color:#72757b;font-size:12px;line-height:1.4;letter-spacing:.025em}
 .story-number{margin:0 0 48px;font-size:13px;color:#888b91;letter-spacing:.08em}
 .story-copy h3{max-width:650px;margin:0 0 28px;font-size:clamp(43px,4.5vw,72px);font-weight:430;line-height:.98;letter-spacing:-.055em;text-wrap:balance}
 .story-copy>p:not(.story-number):not(.eyebrow){max-width:625px;margin:0 0 18px;color:#50535a;font-size:17px;line-height:1.65}
@@ -101,6 +107,7 @@
   .section-intro h2,.context-heading h2,.context-heading>p:last-child,.research-heading h2,.research-heading>p:last-child{grid-column:1}
   .story-block,.story-block-reverse{grid-template-columns:1fr;gap:44px}
   .story-block-reverse .story-media{order:0}
+  .story-block-reverse .story-gallery{order:0}
   .story-copy{max-width:760px}
   .research-cards{grid-template-columns:1fr;gap:18px}
   .research-card{min-height:450px}
@@ -121,6 +128,7 @@
   .principle svg{width:42px;height:42px}
   .section-intro h2,.context-heading h2,.research-heading h2{font-size:49px}
   .story-media{border-radius:20px;aspect-ratio:1/1}
+  .story-photo .story-media{aspect-ratio:4/3}
   .story-number{margin-bottom:34px}
   .story-copy h3{font-size:43px}
   .research-card{min-height:430px;padding:24px;border-radius:22px}

@@ -5,6 +5,7 @@ This is the internal source record for future verified outreach statistics. Do n
 | Event date | Event | Category | Audience | Location | Verified attendance | Evidence or source | Verified by | Photos available | Notes |
 | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |
 | September 11, 2026 | California high-school outreach and EcoCAR lab tour | Community outreach | Visiting high-school students | B-13, Engineering Building | Not yet recorded | Team-provided event information | Not yet recorded | Requested; availability not yet confirmed | Event took place. Record the confirmed EcoCAR visitor count when supplied. |
+| September 8, 2026 | Wildfire-response command-vehicle stakeholder visit | Government and industry outreach | Fire-service professionals, local representatives, and Cal State LA EcoCAR students | Cal State LA | Not recorded | Team-provided visit summary and photographs | Dr. David Blekhman | Yes | Discussion covered regional terrain, off-road requirements, equipment, and command-vehicle functional needs. Do not estimate attendance from photographs. |
 
 ## Recording rules
 

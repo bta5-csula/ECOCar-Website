@@ -47,6 +47,17 @@ These findings define problems and research directions. They do not prove that t
 
 ## Stakeholder discovery
 
+### September 8, 2026 command-vehicle visit
+
+Cal State LA EcoCAR students met with Chief Lloyd, Chief Dan Dunn, and Council Member Michael Cacciotti to learn about wildfire-response command vehicles. The discussion covered regional terrain, off-road requirements, equipment, and the functional needs of vehicles used in this specialized duty. The input supports early requirements work during the first year of the four-year EcoCAR Innovation Challenge.
+
+Five original photographs from the visit are retained in `Battalion_Chief_vehicle_images`. The two selected for the public Outreach page are:
+
+- `20260908_160044.jpg` — students learning about equipment and configuration at the rear of the command vehicle.
+- `20260908_160256.jpg` — students, fire-service professionals, and local representatives together at Cal State LA.
+
+Attendance was not formally recorded. Do not infer or publish an attendance total from the photographs.
+
 Before settling vehicle functions, the team should speak with affected communities and fire-service professionals. Useful questions include:
 
 - What information is hardest to obtain during a wildfire response?
