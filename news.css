@@ -287,6 +287,19 @@
   .news-page-shell .featured-art {
     margin-top: 0;
   }
+
+  .news-page-shell .filter-row {
+    padding-right: 42px;
+    scroll-padding-right: 42px;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-inline: contain;
+    mask-image: linear-gradient(90deg,#000 0,#000 calc(100% - 34px),transparent 100%);
+  }
+
+  .news-page-shell .filter,
+  .news-page-shell .news-follow-link {
+    scroll-snap-align: start;
+  }
 }
 
 @media (max-width: 560px) {

@@ -124,6 +124,7 @@ main{overflow:hidden;padding-top:52px}
 .footer-col span{font-size:13px;color:var(--muted);margin-bottom:7px}
 .footer-word{font-size:clamp(92px,19vw,270px);font-weight:520;line-height:.85;letter-spacing:-.07em;margin:90px 0 35px;white-space:nowrap}
 .footer-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 22px;border-top:1px solid #d7d8dc;padding-top:18px;color:var(--muted);font-size:13px}.footer-policy-links{display:flex;gap:14px}.footer-policy-links a{color:inherit;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px}.footer-policy-links a:hover,.footer-policy-links a:focus-visible{text-decoration-color:currentColor}
+.mobile-section-nav{display:none}
 
 @media(max-width:900px){
  .site-header{height:52px;padding:0 18px}.desktop-nav,.nav-cta{display:none}.brand{margin-right:auto}.menu-toggle{display:block;width:44px;height:44px}.mobile-nav{top:52px}
@@ -137,6 +138,8 @@ main{overflow:hidden;padding-top:52px}
  .featured{grid-template-columns:1fr;gap:35px}.featured-art{height:320px}
  .pricing-page{padding:0 20px 80px}.pricing-hero{margin:0 -20px;height:300px}.join-grid{grid-template-columns:1fr 1fr}.join-card{min-height:480px}
  .site-footer{padding:55px 22px 22px}.footer-top{grid-template-columns:1fr 1fr}.footer-top h2{grid-column:1/-1}.footer-bottom{flex-direction:column;gap:8px}
+ .mobile-section-nav{display:flex;gap:8px;margin:0 0 34px;padding:2px 0 8px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 36px),transparent 100%)}.mobile-section-nav::-webkit-scrollbar{display:none}.mobile-section-nav a{flex:0 0 auto;min-height:44px;display:inline-flex;align-items:center;padding:9px 15px;border:1px solid #e1e2e7;border-radius:999px;background:#f7f7f9;color:#27282c;font-size:14px;font-weight:550;text-decoration:none;scroll-snap-align:start}.mobile-section-nav a:focus-visible{outline:2px solid #6b4aa1;outline-offset:2px}
+ .person-card summary,.person-card details a,.footer-policy-links a{min-height:44px;display:flex;align-items:center}
 }
 @media(prefers-reduced-motion:reduce){.menu-toggle::before,.menu-toggle::after,.mobile-nav,.mobile-nav a{transition:none!important}.mobile-nav{transform:none}.mobile-nav a{transform:none}}
 @media(max-width:560px){.people-grid,.story-grid,.join-grid{grid-template-columns:1fr}.portrait{height:300px}.press-page h1{margin-bottom:35px}.featured h1{font-size:58px}.featured-art{height:260px}.join-card{min-height:auto}.footer-word{font-size:24vw}}

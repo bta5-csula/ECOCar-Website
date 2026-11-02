@@ -4,6 +4,8 @@
   filter: brightness(.94) saturate(.96) contrast(.99);
 }
 
+.press-page [id] { scroll-margin-top: 76px; }
+
 .portrait.portrait-blekhman img {
   filter: brightness(.92) saturate(.94) contrast(.98);
 }

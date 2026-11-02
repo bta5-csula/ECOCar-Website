@@ -319,7 +319,10 @@
 
 @media (max-width: 560px) {
   .primary-logo-grid,
-  .supporter-strip { grid-template-columns: 1fr; }
+  .supporter-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .logo-card-featured { grid-column: 1 / -1; }
+  .logo-card { min-height: 118px; padding: 17px 12px; }
+  .supporter-strip a { min-height: 100px; padding: 18px 12px; }
   .about-video-media { padding: 5px; border-radius: 22px; }
   .about-video video { border-radius: 17px; }
   .sponsor-links { align-items: flex-start; flex-direction: column; }

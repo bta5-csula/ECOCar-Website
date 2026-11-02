@@ -239,6 +239,23 @@ function installIconRowTyping(section){
  if(!('IntersectionObserver'in window))start();else new IntersectionObserver(entries=>{if(entries[0]?.isIntersecting)start()},{threshold:.08,rootMargin:'0px 0px -10%'}).observe(header);
 }
 
+function repairFeatureDescriptionAccessibility(){
+ document.querySelectorAll('p.feature-description[aria-label]').forEach(description=>{
+  const accessibleText=description.getAttribute('aria-label')?.trim();
+  if(!accessibleText)return;
+  description.removeAttribute('aria-label');
+  if(!description.querySelector('.eco-feature-accessible-copy')){
+   const copy=document.createElement('span');
+   copy.className='visually-hidden eco-feature-accessible-copy';
+   copy.textContent=accessibleText;
+   description.appendChild(copy);
+  }
+ });
+}
+
+const featureDescriptionObserver=new MutationObserver(repairFeatureDescriptionAccessibility);
+featureDescriptionObserver.observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['aria-label']});
+
 function customizeHome(){
  ensureHomeMetadata();
  document.querySelectorAll('use[href*="sprite-icons.svg"]').forEach(use=>use.setAttribute('href',use.getAttribute('href').replace(/^https:\/\/antigravity\.google\/assets\/image\/icons\/sprite-icons\.svg/,'.reference/sprite-icons.svg')));
@@ -264,7 +281,7 @@ function customizeHome(){
  });
  const downloadCta=document.querySelector('[data-cta-container]');if(downloadCta&&!downloadCta.querySelector('.eco-join-cta'))downloadCta.innerHTML='<a href="join.html" class="eco-join-cta call-to-action button button-primary-inverse"><span>Join the Team</span></a>';
  const mobileNotice=document.querySelector('[data-mobile-footer-notice]');if(mobileNotice&&!mobileNotice.querySelector('.eco-mobile-notice-title')){mobileNotice.classList.add('eco-mobile-notice');mobileNotice.innerHTML='<p class="eco-mobile-notice-title">Meet the team in B-13</p><p class="eco-mobile-notice-copy">General meetings are Fridays from 12–1 p.m. in the Engineering Building garage.</p><a class="button button-secondary-inverse" href="mailto:ecocarchargingeagles@gmail.com">Email the team</a>'}
- document.querySelectorAll('a').forEach(link=>{const label=link.textContent.trim();if(label==='Download'||label.startsWith('Download for')){link.href='join.html';const span=link.querySelector('span');if(span)span.textContent='Join the Team'}if(label==='Email the team')link.href='mailto:ecocarchargingeagles@gmail.com';if(label==='Explore Product'||label==='View case')link.href='vehicle.html';if(label==='Read More')link.href='about.html';if(label==='View news')link.href='news.html';});
+ document.querySelectorAll('a').forEach(link=>{const label=link.textContent.trim();if(label==='Download'||label.startsWith('Download for')){link.href='join.html';const span=link.querySelector('span');if(span)span.textContent='Join the Team'}if(label==='Email the team')link.href='mailto:ecocarchargingeagles@gmail.com';if(label==='Explore Product'||label==='View case')link.href='vehicle.html';if(label==='Read More'){link.href='about.html';link.setAttribute('aria-label','Learn about team partnerships')}if(label==='View news')link.href='news.html';});
  document.querySelectorAll('a[href*="antigravity.google"]').forEach(link=>{link.removeAttribute('href');link.setAttribute('aria-hidden','true');link.tabIndex=-1});
  const footerInner=document.querySelector('footer .footer-inner');if(footerInner&&!footerInner.dataset.ecoReady){footerInner.dataset.ecoReady='true';footerInner.classList.add('eco-footer-layout');footerInner.innerHTML='<div class="eco-footer-title"><p class="footer-title heading-5">Cal State LA EcoCAR</p></div><div class="eco-footer-nav"><p class="caption">Explore</p><a class="call-to-action call-to-action--nav" href="about.html">About</a><a class="call-to-action call-to-action--nav" href="vehicle.html">Vehicle</a><a class="call-to-action call-to-action--nav" href="team.html">Team</a><a class="call-to-action call-to-action--nav" href="outreach.html">Outreach</a></div><div class="eco-footer-nav"><p class="caption">Connect</p><a class="call-to-action call-to-action--nav" href="news.html">News</a><a class="call-to-action call-to-action--nav" href="join.html">Join the Team</a><a class="call-to-action call-to-action--nav" href="https://www.instagram.com/csulaecocar/">Instagram</a></div>'}
  const footerWord=document.querySelector('[data-antigravity-footer-wrapper]');if(footerWord)footerWord.innerHTML='<div class="home-footer-word">EcoCAR</div>';
@@ -273,6 +290,7 @@ function customizeHome(){
  const iconSection=[...document.querySelectorAll('section')].find(section=>section.textContent.includes('multidisciplinary student engineering team'));if(iconSection){iconSection.id='icon-row';installIconRowTyping(iconSection);if(location.hash==='#icon-row')iconSection.scrollIntoView()}
  document.documentElement.classList.add('ecocar-ready');
  installEcoCarPhotoCredits();
+ repairFeatureDescriptionAccessibility();
 }
 
 customizeHome();installIconSprite();

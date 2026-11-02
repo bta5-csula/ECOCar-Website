@@ -1,5 +1,6 @@
 .outreach-page{background:#fff;color:var(--ink)}
 .outreach-page [id]{scroll-margin-top:82px}
+.outreach-page>.mobile-section-nav{margin:28px var(--page) 0}
 .eyebrow{margin:0 0 18px;font-size:12px;font-weight:600;letter-spacing:.095em;text-transform:uppercase;color:#676a70}
 
 .outreach-hero{min-height:720px;padding:clamp(140px,16vh,190px) var(--page) clamp(90px,12vh,135px);display:grid;grid-template-columns:minmax(0,1.22fr) minmax(210px,.38fr);grid-template-rows:auto auto;gap:clamp(46px,7vw,120px);align-content:center;border-bottom:1px solid var(--line)}
@@ -135,5 +136,12 @@
   .research-card h3{font-size:34px}
   .research-card-icon{width:58px;height:58px;border-radius:16px}
   .conversation-section h2{font-size:50px}
+  .outreach-principles{padding-top:68px;padding-bottom:68px;gap:46px}
+  .outreach-stories,.wildfire-context,.research-section,.conversation-section{padding-top:82px;padding-bottom:82px}
+  .section-intro,.context-heading,.research-heading{margin-bottom:56px}
+  .story-block{padding-bottom:88px;gap:34px}
+  .context-item,.context-item:first-child,.context-item:last-child{padding-top:28px;padding-bottom:28px}
+  .context-item>span{margin-bottom:22px}
+  .research-card{min-height:400px}
 }
 @media(prefers-reduced-motion:reduce){.story-media img,.research-card.visible,.research-card-spotlight,.research-card:after,.conversation-copy .pill{transition:none}.research-card.visible{transform:none}.research-card:after{display:none}.conversation-section:before{display:none}}

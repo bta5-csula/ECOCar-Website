@@ -16,6 +16,8 @@
 .eco-photo-credit{position:absolute;right:10px;bottom:10px;z-index:8;padding:5px 8px;border:1px solid rgba(255,255,255,.24);border-radius:999px;color:#fff;background:rgba(18,19,23,.62);box-shadow:0 4px 14px rgba(0,0,0,.14);font:500 11px/1.2 "Google Sans Flex","Google Sans",Arial,sans-serif;letter-spacing:.02em;backdrop-filter:blur(8px);pointer-events:none}
 @media(max-width:767px){.home-video-follow{display:none}.home-video-modal{padding:18px}.home-video-frame{width:96vw;border-radius:14px}.footer .footer-inner.eco-footer-layout{grid-template-columns:1fr 1fr;gap:34px 28px}.eco-footer-title{grid-column:1/-1}.home-footer-word{font-size:24vw}.home-footer-meta{padding:20px var(--page-margin)}}
 
+.eco-feature-accessible-copy{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
 /* Balance Cal State LA gold and black with the EcoCAR purple family. */
 .agent-first-section .icon-list .bouncer svg{transition:color .25s ease,filter .25s ease}
 .agent-first-section .icon-list li:nth-child(4n+1) .bouncer svg{color:#ffce00}

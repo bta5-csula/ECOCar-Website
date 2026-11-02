@@ -368,12 +368,12 @@
 
 @media (max-width: 560px) {
   .join-page-shell .pricing-hero {
-    height: 370px;
+    height: 330px;
   }
 
   .join-page-shell .pricing-hero-content {
     align-items: flex-start;
-    padding: 205px 0 0;
+    padding: 162px 0 0;
   }
 
   .join-page-shell .pricing-hero h1 {
