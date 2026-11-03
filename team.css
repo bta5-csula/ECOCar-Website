@@ -1,14 +1,4 @@
-.portrait.portrait-bachman img {
-  object-position: center 28%;
-  transform: scale(1.04) translateY(-15px);
-  filter: brightness(.94) saturate(.96) contrast(.99);
-}
-
 .press-page [id] { scroll-margin-top: 76px; }
-
-.portrait.portrait-blekhman img {
-  filter: brightness(.92) saturate(.94) contrast(.98);
-}
 
 .bachzilla-card details { position: relative; }
 .bachzilla-card summary { padding-right: 44px; }
@@ -104,12 +94,6 @@
   display: block;
   width: 100%;
   height: auto;
-}
-
-@media (max-width: 980px) {
-  .portrait.portrait-bachman img {
-    transform: scale(1.04) translateY(7px);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
